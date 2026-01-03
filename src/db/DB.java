@@ -7,7 +7,7 @@ public class DB {
         return DriverManager.getConnection(
             "jdbc:mysql://localhost:3306/pos_db",
             "root",
-            "password"
+            "root"
         );
     }
 }

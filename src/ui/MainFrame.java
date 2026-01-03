@@ -7,9 +7,10 @@ public class MainFrame extends javax.swing.JFrame {
     public static BillPanel billPanel;
 
     public MainFrame() {
-                setTitle("POS System");
-        setSize(1000,600);
+        setTitle("POS System");
+        setSize(1000, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
         billPanel = new BillPanel();

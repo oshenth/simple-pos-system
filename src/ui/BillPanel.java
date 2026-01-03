@@ -6,12 +6,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 
-public class BillPanel extends javax.swing.JFrame {
-    
+public class BillPanel extends javax.swing.JPanel {
+
     private JTextArea area = new JTextArea();
     private JLabel totalLbl = new JLabel("Total: 0.00");
     private Map<String, CartItem> cart = new HashMap<>();
-    
+
     public BillPanel() {
         setPreferredSize(new Dimension(300,0));
         setLayout(new BorderLayout());
@@ -29,7 +29,7 @@ public class BillPanel extends javax.swing.JFrame {
         cart.get(name).qty++;
         refresh();
     }
-   
+
     private void refresh() {
         area.setText("");
         double total = 0;
@@ -40,16 +40,15 @@ public class BillPanel extends javax.swing.JFrame {
             total += i.total();
         }
         totalLbl.setText("Total: " + total);
+
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 400, Short.MAX_VALUE)
@@ -58,9 +57,8 @@ public class BillPanel extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
         );
-
-        pack();
     }// </editor-fold>//GEN-END:initComponents
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
