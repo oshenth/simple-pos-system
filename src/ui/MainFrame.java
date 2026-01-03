@@ -6,9 +6,6 @@ public class MainFrame extends javax.swing.JFrame {
     
     public static BillPanel billPanel;
 
-    /**
-     * Creates new form MainFrame
-     */
     public MainFrame() {
                 setTitle("POS System");
         setSize(1000,600);
