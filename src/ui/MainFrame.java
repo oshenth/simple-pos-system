@@ -3,51 +3,55 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-public class MainFrame extends javax.swing.JFrame {
-    
+public class MainFrame extends JFrame {
+
     public static BillPanel billPanel;
 
     public MainFrame() {
-        
+
+        // --- Frame settings ---
         setTitle("Hotel Water Garden POS System");
         setSize(1200, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-        
-        ((JComponent) getContentPane())
-                .setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        ((JComponent) getContentPane()).setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Bill panel
+        // --- Title label ---
+        JLabel titleLbl = new JLabel("Hotel Water Garden", SwingConstants.CENTER);
+        titleLbl.setOpaque(true);
+        titleLbl.setBackground(new Color(0x49d6fa));
+        titleLbl.setForeground(Color.WHITE);
+        titleLbl.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        titleLbl.setBorder(BorderFactory.createEmptyBorder(15, 10, 15, 10));
+        add(titleLbl, BorderLayout.NORTH);
+
+        // --- Bill panel ---
         billPanel = new BillPanel();
-        billPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // 10px gap
+        billPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
-        // Items panel (scrollable)
+        // --- Items panel ---
         ItemsPanel itemsPanel = new ItemsPanel();
         JScrollPane itemsScroll = new JScrollPane(itemsPanel);
-        
         itemsScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         itemsScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        
         itemsScroll.getVerticalScrollBar().setUnitIncrement(16);
 
-        // Split pane: 75% items | 25% bill
+        // --- Split pane (items left, bill right) ---
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
                 itemsScroll,
                 billPanel
         );
-        splitPane.setResizeWeight(0.75); // Items panel gets 75%, BillPanel gets 25%
-        splitPane.setDividerSize(0); // invisible divider
+        splitPane.setResizeWeight(0.75); // items 75%, bill 25%
+        splitPane.setDividerSize(0);
         splitPane.setContinuousLayout(true);
 
         add(splitPane, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new MainFrame().setVisible(true);
-        });
+        SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
     }
 
     @SuppressWarnings("unchecked")

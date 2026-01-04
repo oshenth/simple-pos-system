@@ -8,7 +8,7 @@ import java.sql.*;
 public class ItemsPanel extends javax.swing.JPanel {
 
     public ItemsPanel() {
-        setLayout(new GridLayout(0, 5, 10, 10)); // 4 columns, unlimited rows
+        setLayout(new GridLayout(0, 4, 10, 10)); // 4 columns, unlimited rows
         setBackground(Color.WHITE);
         loadItems();
     }
