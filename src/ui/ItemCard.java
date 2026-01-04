@@ -2,18 +2,11 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-public class ItemCard extends javax.swing.JPanel {
-    
-    
-    private final Color normal = Color.WHITE;
-    private final Color hover = new Color(230, 245, 255);
-    private boolean hovered = false;
+public class ItemCard extends JPanel {
 
     private BufferedImage img;
     private String name;
@@ -36,50 +29,83 @@ public class ItemCard extends javax.swing.JPanel {
             }
         }
 
-        // Label panel with background color #49d6fa
-        JPanel labelPanel = new JPanel();
-        labelPanel.setBackground(new Color(0x49d6fa)); // your color
-        labelPanel.setLayout(new BoxLayout(labelPanel, BoxLayout.Y_AXIS));
-        labelPanel.setOpaque(true);
+        // Bottom panel with name, price, and buttons
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setOpaque(true);
+        bottomPanel.setBackground(new Color(0x49d6fa));
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        // Name label
+        // Name + Price in one line
+        JPanel namePricePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        namePricePanel.setOpaque(false);
+
         JLabel nameLbl = new JLabel(name);
         nameLbl.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        nameLbl.setAlignmentX(CENTER_ALIGNMENT);
         nameLbl.setForeground(Color.WHITE);
-        nameLbl.setBorder(BorderFactory.createEmptyBorder(5, 2, 2, 2));
 
-        // Price label
         JLabel priceLbl = new JLabel("Rs. " + price);
         priceLbl.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        priceLbl.setAlignmentX(CENTER_ALIGNMENT);
         priceLbl.setForeground(Color.WHITE);
-        priceLbl.setBorder(BorderFactory.createEmptyBorder(2, 2, 5, 2));
 
-        labelPanel.add(nameLbl);
-        labelPanel.add(priceLbl);
+        namePricePanel.add(nameLbl);
+        namePricePanel.add(priceLbl);
 
-        add(labelPanel, BorderLayout.SOUTH); // labels at bottom
+        // Buttons panel
+        JPanel btnPanel = new JPanel();
+        btnPanel.setOpaque(false);
+        btnPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 5));
 
-        // Hover + click
-        addMouseListener(new MouseAdapter() {
+        JButton plusBtn = createCircleButton("+", new Color(0x4CAF50));
+        JButton minusBtn = createCircleButton("−", new Color(0xF44336));
+
+        plusBtn.addActionListener(e -> MainFrame.billPanel.addItem(name, price));
+        minusBtn.addActionListener(e -> MainFrame.billPanel.removeItem(name));
+
+        btnPanel.add(minusBtn);
+        btnPanel.add(plusBtn);
+
+        bottomPanel.add(namePricePanel);
+        bottomPanel.add(btnPanel);
+
+        add(bottomPanel, BorderLayout.SOUTH);
+    }
+
+    // Circular button creation
+    private JButton createCircleButton(String text, Color bgColor) {
+        JButton btn = new JButton(text) {
             @Override
-            public void mouseEntered(MouseEvent e) {
-                hovered = true;
-                repaint();
+            protected void paintComponent(Graphics g) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(bgColor);
+                g2.fillOval(0, 0, getWidth(), getHeight());
+                g2.setColor(Color.WHITE);
+                FontMetrics fm = g2.getFontMetrics();
+                int stringWidth = fm.stringWidth(getText());
+                int stringHeight = fm.getAscent();
+                g2.drawString(getText(), (getWidth() - stringWidth) / 2, (getHeight() + stringHeight) / 2 - 2);
+                g2.dispose();
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
-                hovered = false;
-                repaint();
+            public Dimension getPreferredSize() {
+                return new Dimension(30, 30);
             }
 
             @Override
-            public void mouseClicked(MouseEvent e) {
-                MainFrame.billPanel.addItem(name, price);
+            public boolean contains(int x, int y) {
+                int radius = getWidth() / 2;
+                int centerX = radius;
+                int centerY = radius;
+                return (x - centerX) * (x - centerX) + (y - centerY) * (y - centerY) <= radius * radius;
             }
-        });
+        };
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 
     @Override
@@ -88,30 +114,28 @@ public class ItemCard extends javax.swing.JPanel {
         Graphics2D g2 = (Graphics2D) g.create();
         int arc = 20;
 
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         // Background
-        g2.setColor(hovered ? hover : normal);
+        g2.setColor(Color.WHITE);
         g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
 
         // Border
-        g2.setColor(hovered ? new Color(0, 120, 215) : new Color(200, 200, 200));
+        g2.setColor(new Color(200, 200, 200));
         g2.setStroke(new BasicStroke(1.5f));
         g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, arc, arc);
 
-        // Draw image stretched in available area
+        // Draw image
         if (img != null) {
-            int labelHeight = 40; // approximate space for label panel
+            int bottomHeight = 60; // space for name, price, and buttons
             int availableWidth = getWidth() - 4;
-            int availableHeight = getHeight() - labelHeight - 4;
+            int availableHeight = getHeight() - bottomHeight - 4;
 
             g2.drawImage(img, 2, 2, availableWidth, availableHeight, null);
         }
-
         g2.dispose();
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
