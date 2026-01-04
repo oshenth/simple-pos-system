@@ -1,4 +1,5 @@
 package ui;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -7,16 +8,46 @@ public class MainFrame extends javax.swing.JFrame {
     public static BillPanel billPanel;
 
     public MainFrame() {
-        setTitle("POS System");
-        setSize(1000, 600);
+        
+        setTitle("Hotel Water Garden POS System");
+        setSize(1200, 700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+        
+        ((JComponent) getContentPane())
+                .setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        // Bill panel
         billPanel = new BillPanel();
+        billPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // 10px gap
 
-        add(new ItemsPanel(), BorderLayout.CENTER);
-        add(billPanel, BorderLayout.EAST);
+        // Items panel (scrollable)
+        ItemsPanel itemsPanel = new ItemsPanel();
+        JScrollPane itemsScroll = new JScrollPane(itemsPanel);
+        
+        itemsScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        itemsScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        
+        itemsScroll.getVerticalScrollBar().setUnitIncrement(16);
+
+        // Split pane: 75% items | 25% bill
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.HORIZONTAL_SPLIT,
+                itemsScroll,
+                billPanel
+        );
+        splitPane.setResizeWeight(0.75); // Items panel gets 75%, BillPanel gets 25%
+        splitPane.setDividerSize(0); // invisible divider
+        splitPane.setContinuousLayout(true);
+
+        add(splitPane, BorderLayout.CENTER);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new MainFrame().setVisible(true);
+        });
     }
 
     @SuppressWarnings("unchecked")

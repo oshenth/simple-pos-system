@@ -1,34 +1,33 @@
 package ui;
+
 import db.DB;
-import javax.swing.*;
+//import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
 
 public class ItemsPanel extends javax.swing.JPanel {
 
     public ItemsPanel() {
-                setLayout(new GridLayout(0,3,10,10));
+        setLayout(new GridLayout(0, 5, 10, 10)); // 4 columns, unlimited rows
+        setBackground(Color.WHITE);
         loadItems();
     }
     
      private void loadItems() {
         try {
             Connection c = DB.getConnection();
-            ResultSet rs = c.createStatement()
-                .executeQuery("SELECT * FROM items");
+            Statement st = c.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM items order by name asc");
 
             while (rs.next()) {
                 String name = rs.getString("name");
                 double price = rs.getDouble("price");
                 String img = rs.getString("image_path");
 
-                JButton btn = new JButton(name,
-                    new ImageIcon(img));
-                btn.addActionListener(e ->
-                    MainFrame.billPanel.addItem(name, price)
-                );
-                add(btn);
+                ItemCard card = new ItemCard(name, price, img);
+                add(card);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
